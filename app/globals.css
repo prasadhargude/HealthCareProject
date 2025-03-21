@@ -25,6 +25,26 @@
     --ring: 142.1 76.2% 36.3%;
     --radius: 0.5rem;
   }
+  @font-face {
+    font-family: 'Inter';
+    src: url('/fonts/Inter-Regular.woff2') format('woff2'),
+         url('/fonts/Inter-Regular.woff') format('woff');
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+  }
+  
+  @font-face {
+    font-family: 'Inter';
+    src: url('/fonts/Inter-Bold.woff2') format('woff2'),
+         url('/fonts/Inter-Bold.woff') format('woff');
+    font-weight: 700;
+    font-style: normal;
+    font-display: swap;
+  }
+  
+  /* Add more @font-face rules for other weights and styles as needed */
+
 
   .dark {
     --background: 222.2 84% 4.9%;
@@ -54,6 +74,8 @@
     @apply border-border;
   }
   body {
+      
+    font-family: 'Inter', sans-serif;
     @apply bg-background text-foreground;
   }
 }

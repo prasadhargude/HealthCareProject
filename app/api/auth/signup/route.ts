@@ -1,40 +1,65 @@
-import { NextResponse } from 'next/server';
-import clientPromise from '@/lib/mongodb';
-import bcrypt from 'bcryptjs';
+import { NextResponse } from "next/server";
+import bcrypt from "bcryptjs";
+import connectToDatabase from "@/lib/mongodb";
+import User from "@/models/User";
 
-export async function POST(req: Request) {
+export async function POST(request: Request) {
   try {
-    const { firstName, lastName, email, gender, username, mobileNumber, address, password } = await req.json();
+    const userData = await request.json();
+    console.log("📌 Received Signup Data:", userData); // Debug log
 
-    const client = await clientPromise;
-    const db = client.db('healthconnect');
+    // Connect to MongoDB
+    await connectToDatabase();
 
     // Check if user already exists
-    const existingUser = await db.collection('users').findOne({ email });
+    const existingUser = await User.findOne({ email: userData.email });
     if (existingUser) {
-      return NextResponse.json({ error: 'User already exists' }, { status: 400 });
+      return NextResponse.json(
+        { error: "User with this email already exists" },
+        { status: 409 }
+      );
     }
 
-    // Hash password
-    const hashedPassword = await bcrypt.hash(password, 10);
+    // Ensure all required fields exist
+    const requiredFields = [
+      "name", "email", "password", "phone", "birthDate",
+      "gender", "address", "emergencyContactName", "emergencyContactNumber",
+      "treatmentConsent", "privacyConsent"
+    ];
+    
+    for (const field of requiredFields) {
+      if (!userData[field] && userData[field] !== false) {
+        return NextResponse.json(
+          { error: `${field} is required` },
+          { status: 400 }
+        );
+      }
+    }
 
-    // Create new user
-    const result = await db.collection('users').insertOne({
-      firstName,
-      lastName,
-      email,
-      gender,
-      username,
-      mobileNumber,
-      address,
+    // Hash the password
+    const hashedPassword = await bcrypt.hash(userData.password, 10);
+
+    // Save user data to MongoDB
+    const newUser = await User.create({
+      ...userData,
       password: hashedPassword,
-      role: 'user',
-      createdAt: new Date(),
     });
 
-    return NextResponse.json({ message: 'User created successfully', userId: result.insertedId }, { status: 201 });
-  } catch (error) {
-    console.error('Signup error:', error);
-    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
+    console.log("✅ User Created Successfully:", newUser._id);
+
+    return NextResponse.json(
+      {
+        success: true,
+        message: "Account created successfully",
+        userId: newUser._id,
+      },
+      { status: 201 }
+    );
+  } catch (error: any) {
+    console.error("❌ Error in Signup:", error);
+    return NextResponse.json(
+      { error: error.message || "Something went wrong" },
+      { status: 500 }
+    );
   }
 }

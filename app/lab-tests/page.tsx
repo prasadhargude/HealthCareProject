@@ -43,7 +43,7 @@ export default function LabTests() {
           <div key={test.id} className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md">
             <h2 className="text-xl font-semibold mb-2 text-gray-800 dark:text-white">{test.name}</h2>
             <p className="text-gray-600 dark:text-gray-300 mb-2">{test.description}</p>
-            <p className="text-gray-600 dark:text-gray-300 mb-4">Price: ${test.price.toFixed(2)}</p>
+            <p className="text-gray-600 dark:text-gray-300 mb-4">Price: Rs.{test.price.toFixed(2)}</p>
             <button className="bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700">Book Test</button>
           </div>
         ))}

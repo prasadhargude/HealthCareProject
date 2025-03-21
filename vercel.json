@@ -1,0 +1,7 @@
+{
+  "framework": "next",
+    "crons": [{
+      "path": "/api/cron/update-slots",
+      "schedule": "0 0 * * *"
+    }]
+  }

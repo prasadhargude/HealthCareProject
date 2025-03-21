@@ -1,15 +1,21 @@
-import { NextResponse } from 'next/server';
-import clientPromise from '@/lib/mongodb';
+import { NextResponse } from "next/server"
+
+const specialties = [
+  { _id: "1", name: "General Practitioner", icon: "👨‍⚕️" },
+  { _id: "2", name: "Neurologist", icon: "🧠" },
+  { _id: "3", name: "Pulmonologist", icon: "🫁" },
+  { _id: "4", name: "Cardiologist", icon: "❤️" },
+  { _id: "5", name: "Gastroenterologist", icon: "🫃" },
+  { _id: "6", name: "Dermatologist", icon: "🧴" },
+  { _id: "7", name: "Rheumatologist", icon: "🦴" },
+  { _id: "8", name: "Pediatrician", icon: "👶" },
+  { _id: "9", name: "Psychiatrist", icon: "🧠" },
+  { _id: "10", name: "Ophthalmologist", icon: "👁️" },
+  { _id: "11", name: "Gynecologist", icon: "👩" },
+  { _id: "12", name: "Urologist", icon: "🚽" },
+]
 
 export async function GET() {
-  try {
-    const client = await clientPromise;
-    const db = client.db("healthconnect");
-    const specialties = await db.collection("specialties").find({}).toArray();
-    
-    return NextResponse.json(specialties);
-  } catch (error) {
-    console.error("Error fetching specialties:", error);
-    return NextResponse.json({ error: "Failed to fetch specialties" }, { status: 500 });
-  }
+  return NextResponse.json(specialties)
 }
+
